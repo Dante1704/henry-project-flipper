@@ -13,6 +13,7 @@ import { aceptarORechazarPostulante } from "@/services/aceptarORechazarPostulant
 import { useSesionUsuarioContext } from "@/hooks/useSesionUsuarioContext";
 import Link from "next/link";
 import { downloadExcelDetalleEvento } from "@/components/Excel/generateExcel";
+import estandarizarFecha from "@/utils/EstandarizarFecha";
 const buttonStyle =
   "btn bg-[#4B39EF] normal-case text-[24px] text-white border-transparent hover:bg-[#605BDC]";
 interface postulante {
@@ -38,10 +39,18 @@ const EventDatail = () => {
   const [loading, setLoading] = useState(false);
   const { idEvent } = router.query;
   let id = 0;
+  //console.log(rows);
   const columns: GridColDef[] = [
     {
       field: "Nombre",
       headerName: "Nombre",
+      flex: 0.2,
+      headerClassName: "super-app-theme--header",
+      cellClassName: "super-app-theme--cell",
+    },
+    {
+      field: "Telefono",
+      headerName: "Telefono",
       flex: 0.2,
       headerClassName: "super-app-theme--header",
       cellClassName: "super-app-theme--cell",
@@ -120,6 +129,7 @@ const EventDatail = () => {
           id: id++,
           UUID: trabajadorPorEvento.trabajadorId,
           Nombre: trabajadorPorEvento.trabajadores.name,
+          Telefono: trabajadorPorEvento.trabajadores.phone,
           Perfil: eventDetail?.perfil,
           Status: trabajadorPorEvento.status,
         };
@@ -167,7 +177,7 @@ const EventDatail = () => {
                   Fecha de Inicio:
                 </p>
                 <p className="text-center font-bold text-lg">
-                  {eventDetail?.fecha_inicio}
+                  {estandarizarFecha(eventDetail?.fecha_inicio)}
                 </p>
               </div>
               <div className="flex flex-col">
@@ -175,7 +185,7 @@ const EventDatail = () => {
                   Fecha de Finalizacion:
                 </p>
                 <p className="text-center font-bold text-lg">
-                  {eventDetail?.fecha_final}
+                  {estandarizarFecha(eventDetail?.fecha_final)}
                 </p>
               </div>
             </div>
@@ -194,7 +204,7 @@ const EventDatail = () => {
                   Ciudad Y Dirección:
                 </p>
                 <p className="text-center font-bold text-lg">
-                  {eventDetail?.lugar}
+                  {eventDetail?.lugar}, {eventDetail?.establecimiento}
                 </p>
               </div>
             </div>
@@ -253,7 +263,7 @@ const EventDatail = () => {
                   onClick={() => {
                     downloadExcelDetalleEvento(rows);
                   }}
-                  className={buttonStyle + " ml-2"}
+                  className={buttonStyle + " mt-4"}
                 >
                   Descargar Excel
                 </button>
